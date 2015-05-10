@@ -28,6 +28,15 @@ public class CallActivity extends ActionBarActivity {
                     }
                 }
         );
+
+        // Call SetGuideNumber
+        findViewById(R.id.setGuide).setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        startActivity(new Intent(getApplication(), GetGuideNum.class));
+                    }
+                }
+        );
     }
 
 
