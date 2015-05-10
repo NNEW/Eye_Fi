@@ -20,21 +20,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<<<<<<< HEAD
+
         <activity
             android:name=".GetGuideNum"
             android:label="@string/title_activity_get_guide_num" >
         </activity>
-    </application>
-=======
+
         <receiver android:name=".Broadcast">
             <intent-filter android:priority="9999">
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
+
     </application>
 
-
->>>>>>> origin/master
 </manifest>
