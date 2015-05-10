@@ -4,5 +4,9 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+<<<<<<< HEAD
     <string name="title_activity_get_guide_num">GetGuideNum</string>
+=======
+    <string name="title_activity_broadcast">BroadcastActivity</string>
+>>>>>>> origin/master
 </resources>
