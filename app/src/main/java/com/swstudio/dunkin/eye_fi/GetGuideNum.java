@@ -1,25 +1,77 @@
 package com.swstudio.dunkin.eye_fi;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.ListView;
+import android.widget.SearchView;
 
 import java.util.ArrayList;
 
 
-public class GetGuideNum extends Activity {
+public class GetGuideNum extends Activity implements SearchView.OnQueryTextListener {
+
+    private ArrayList<String> mArrayList = new ArrayList<String>();
+    private ListView mListView;
+    private SearchView mSearchView;
+    private Button mOkButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_get_guide_num);
 
+        mListView  = (ListView) findViewById(R.id.listView);
+        mSearchView = (SearchView) findViewById(R.id.searchView);
+
         ArrayList contacts = getContactList();
+
+
+        for(int i = 0; i < mArrayList.size(); i++){
+            //mListView.setAdapter(mArrayList.get(i));
+            Log.d("ListView", mArrayList.get(i));
+        }
+
+        mListView.setTextFilterEnabled(true);
+        setupSearchView();
+    }
+
+    private void setupSearchView()
+    {
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setSubmitButtonEnabled(true);
+        mSearchView.setQueryHint("Search Here");
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText)
+    {
+
+        if (TextUtils.isEmpty(newText)) {
+            mListView.clearTextFilter();
+        } else {
+            mListView.setFilterText(newText);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query)
+    {
+        return false;
     }
 
     private ArrayList getContactList() {
@@ -33,7 +85,7 @@ public class GetGuideNum extends Activity {
                 ContactsContract.CommonDataKinds.Phone.NUMBER
         };
 
-        String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + "COLLATE LOCALIZED ASC";
+        String sortOrder = ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME + " COLLATE LOCALIZED ASC";
 
         Cursor contactCursor = getContentResolver().query(uri, projection, null, null, sortOrder);
 
@@ -56,8 +108,11 @@ public class GetGuideNum extends Activity {
                 acontact.setPhonenum(phoneNumber);
                 acontact.setName(contactCursor.getString(0));
 
-                Log.d("contact",acontact.getPhonenum());
-                Log.d("contact",acontact.getName());
+                // Insert Name Values of Contacts into ListView
+                mArrayList.add(acontact.getName());
+
+                //Log.d("contact",acontact.getPhonenum());
+                //Log.d("contact",acontact.getName());
 
                 contactList.add(acontact);
 
@@ -66,5 +121,6 @@ public class GetGuideNum extends Activity {
         }
         return contactList;
     }
+
 }
 
