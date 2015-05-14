@@ -16,21 +16,11 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/main_check_box"
-        android:layout_below="@+id/searchView"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/listView"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/searchView"
-        android:layout_toRightOf="@+id/main_check_box"
-        android:layout_toEndOf="@+id/main_check_box" />
+        android:layout_below="@+id/searchView" />
 
 </RelativeLayout>

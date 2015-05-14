@@ -17,13 +17,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
 
-public class GetGuideNum extends Activity implements SearchView.OnQueryTextListener {
+public class GetGuideNum extends Activity {
 
-    private ArrayList<String> mArrayList = new ArrayList<String>();
+    private ArrayList<String> mContactName = new ArrayList<String>();
+    private ArrayList<String> mContactNum = new ArrayList<String>();
     private ListView mListView;
     private SearchView mSearchView;
     private Button mOkButton = null;
@@ -36,46 +38,18 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         mListView  = (ListView) findViewById(R.id.listView);
         mSearchView = (SearchView) findViewById(R.id.searchView);
 
-        ArrayList contacts = getContactList();
+        getContactList();
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 
-        for(int i = 0; i < mArrayList.size(); i++){
-            //mListView.setAdapter(mArrayList.get(i));
-            Log.d("ListView", mArrayList.get(i));
+        for(int i = 0; i < mContactName.size(); i++) {
+            adapter.add(mContactName.get(i));
         }
 
-        mListView.setTextFilterEnabled(true);
-        setupSearchView();
+        mListView.setAdapter(adapter);
     }
 
-    private void setupSearchView()
-    {
-        mSearchView.setIconifiedByDefault(false);
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setSubmitButtonEnabled(true);
-        mSearchView.setQueryHint("Search Here");
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText)
-    {
-
-        if (TextUtils.isEmpty(newText)) {
-            mListView.clearTextFilter();
-        } else {
-            mListView.setFilterText(newText);
-        }
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextSubmit(String query)
-    {
-        return false;
-    }
-
-    private ArrayList getContactList() {
-        ArrayList contactList = new ArrayList();
+    private void getContactList() {
 
         // Get URI of phone contracts
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -103,23 +77,15 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
                                   + phoneNumber.substring(7);
                 }
 
-                Contact acontact = new Contact();
-
-                acontact.setPhonenum(phoneNumber);
-                acontact.setName(contactCursor.getString(0));
-
                 // Insert Name Values of Contacts into ListView
-                mArrayList.add(acontact.getName());
+                mContactName.add(contactCursor.getString(0));
+                mContactNum.add(phoneNumber);
 
                 //Log.d("contact",acontact.getPhonenum());
                 //Log.d("contact",acontact.getName());
 
-                contactList.add(acontact);
-
             }while (contactCursor.moveToNext());
-
         }
-        return contactList;
     }
 
 }
