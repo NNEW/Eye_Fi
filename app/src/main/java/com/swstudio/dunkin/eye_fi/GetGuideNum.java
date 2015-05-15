@@ -20,11 +20,12 @@ import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Filter;
 
 import java.util.ArrayList;
 
 
-public class GetGuideNum extends Activity {
+public class GetGuideNum extends Activity implements SearchView.OnQueryTextListener{
 
     private ArrayList<Contact> mContact = new ArrayList<Contact>();
     private ListView mListView;
@@ -46,15 +47,86 @@ public class GetGuideNum extends Activity {
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 
         mListView.setAdapter(cAdapter);
+        mListView.setTextFilterEnabled(true);
+        setupSearchView();
     }
+
+    private void setupSearchView()
+    {
+        mSearchView.setIconifiedByDefault(false);
+        mSearchView.setOnQueryTextListener(this);
+        mSearchView.setSubmitButtonEnabled(true);
+        //mSearchView.setQueryHint("검색");
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText)
+    {
+
+        if (TextUtils.isEmpty(newText)) {
+            mListView.clearTextFilter();
+        } else {
+            mListView.setFilterText(newText);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query)
+    {
+        return false;
+    }
+
 
     private class ContactAdapter extends ArrayAdapter<Contact> {
 
         private ArrayList<Contact> items;
+        private ArrayList<Contact> origItems;
 
         public ContactAdapter (Context context, int textViewResourceId, ArrayList<Contact> _items) {
                 super(context, textViewResourceId, _items);
                 this.items = _items;
+        }
+
+        public Filter getFilter() {
+            return new Filter() {
+
+                protected FilterResults performFiltering(CharSequence constraint) {
+                    final FilterResults ret = new FilterResults();
+                    final ArrayList<Contact> results = new ArrayList<Contact>();
+
+                    if(origItems == null) {
+                        origItems = items;
+                    }
+
+                    if(constraint != null) {
+                        if(origItems != null && origItems.size() > 0) {
+                            for(final Contact c : origItems) {
+                                if(c.getName().toLowerCase().contains(constraint)) {
+                                    results.add(c);
+                                }
+                            }
+                        }
+
+                        Log.d("Constraint", constraint.toString());
+                        Log.d("Filter", String.valueOf(results.size()));
+                        ret.values = results;
+                        ret.count = results.size();
+                    }
+
+                    return ret;
+                }
+
+                protected void publishResults(CharSequence constraint, FilterResults results) {
+                        items = (ArrayList<Contact>) results.values;
+                        Log.d("Items", String.valueOf(items.size()));
+                        notifyDataSetChanged();
+                }
+            };
+        }
+
+        public void notifyDataSetChanged() {
+            super.notifyDataSetChanged();
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
@@ -64,19 +136,23 @@ public class GetGuideNum extends Activity {
                 LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 v = vi.inflate(R.layout.row, null);
             }
-            Contact temp = items.get(position);
 
-            if(temp != null) {
-                CheckBox cb1 = (CheckBox) v.findViewById(R.id.Name);
-                TextView tb1 = (TextView) v.findViewById(R.id.phoneNum);
+            if(items.size() > position ) {
+                Contact temp = items.get(position);
 
-                if(cb1 != null) {
-                    cb1.setText(temp.getName());
-                }
-                if(tb1 != null) {
-                    tb1.setText("전화번호 : " + temp.getNumber());
+                if (temp != null) {
+                    CheckBox cb1 = (CheckBox) v.findViewById(R.id.Name);
+                    TextView tb1 = (TextView) v.findViewById(R.id.phoneNum);
+
+                    if (cb1 != null) {
+                        cb1.setText(temp.getName());
+                    }
+                    if (tb1 != null) {
+                        tb1.setText("전화번호 : " + temp.getNumber());
+                    }
                 }
             }
+
             return v;
         }
     }
