@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,14 +19,14 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
 
 public class GetGuideNum extends Activity {
 
-    private ArrayList<String> mContactName = new ArrayList<String>();
-    private ArrayList<String> mContactNum = new ArrayList<String>();
+    private ArrayList<Contact> mContact = new ArrayList<Contact>();
     private ListView mListView;
     private SearchView mSearchView;
     private Button mOkButton = null;
@@ -40,13 +41,44 @@ public class GetGuideNum extends Activity {
 
         getContactList();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+        ContactAdapter cAdapter = new ContactAdapter(this, R.layout.row, mContact);
 
-        for(int i = 0; i < mContactName.size(); i++) {
-            adapter.add(mContactName.get(i));
+        //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
+
+        mListView.setAdapter(cAdapter);
+    }
+
+    private class ContactAdapter extends ArrayAdapter<Contact> {
+
+        private ArrayList<Contact> items;
+
+        public ContactAdapter (Context context, int textViewResourceId, ArrayList<Contact> _items) {
+                super(context, textViewResourceId, _items);
+                this.items = _items;
         }
 
-        mListView.setAdapter(adapter);
+        public View getView(int position, View convertView, ViewGroup parent) {
+            View v = convertView;
+
+            if(v == null) {
+                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                v = vi.inflate(R.layout.row, null);
+            }
+            Contact temp = items.get(position);
+
+            if(temp != null) {
+                CheckBox cb1 = (CheckBox) v.findViewById(R.id.Name);
+                TextView tb1 = (TextView) v.findViewById(R.id.phoneNum);
+
+                if(cb1 != null) {
+                    cb1.setText(temp.getName());
+                }
+                if(tb1 != null) {
+                    tb1.setText("전화번호 : " + temp.getNumber());
+                }
+            }
+            return v;
+        }
     }
 
     private void getContactList() {
@@ -67,6 +99,8 @@ public class GetGuideNum extends Activity {
             do {
                 String phoneNumber = contactCursor.getString(1).replaceAll("-", "");
 
+                Contact aContact = new Contact();
+
                 if(phoneNumber.length() == 10) {
                     phoneNumber = phoneNumber.substring(0,3) + "-"
                                   + phoneNumber.substring(3,6) + "-"
@@ -78,13 +112,47 @@ public class GetGuideNum extends Activity {
                 }
 
                 // Insert Name Values of Contacts into ListView
-                mContactName.add(contactCursor.getString(0));
-                mContactNum.add(phoneNumber);
+                aContact.setName(contactCursor.getString(0));
+                aContact.setNumber(phoneNumber);
+                mContact.add(aContact);
 
                 //Log.d("contact",acontact.getPhonenum());
                 //Log.d("contact",acontact.getName());
 
             }while (contactCursor.moveToNext());
+        }
+    }
+
+    class Contact {
+        private String Number;
+        private CheckBox Check = new CheckBox(getApplicationContext());
+
+        public Contact () {
+        }
+
+        public Contact (String _name, String _number) {
+            this.Check.setText(_name);
+            this.Number = _number;
+        }
+
+        public void setName(String name) {
+            this.Check.setText(name);
+        }
+
+        public void setNumber(String num) {
+            this.Number = num;
+        }
+
+        public String getName() {
+            return (String) this.Check.getText();
+        }
+
+        public String getNumber() {
+            return this.Number;
+        }
+
+        public boolean getChecked() {
+            return this.Check.isChecked();
         }
     }
 
