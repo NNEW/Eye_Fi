@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.swstudio.dunkin.eye_fi" >
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
-
-    <uses-permission android:name ="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:allowBackup="true"
@@ -20,19 +20,25 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".GetGuideNum"
             android:label="@string/title_activity_get_guide_num" >
         </activity>
 
-        <receiver android:name=".Broadcast">
-            <intent-filter android:priority="9999">
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+        <receiver android:name=".Broadcast" >
+            <intent-filter android:priority="9999" >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
+        <activity
+            android:name=".PopupActivity"
+            android:theme="@android:style/Theme.Dialog">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
