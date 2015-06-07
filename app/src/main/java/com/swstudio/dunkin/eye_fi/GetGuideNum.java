@@ -13,9 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.ArrayAdapter;
@@ -23,7 +25,6 @@ import android.widget.TextView;
 import android.widget.Filter;
 
 import java.util.ArrayList;
-
 
 public class GetGuideNum extends Activity implements SearchView.OnQueryTextListener{
 
@@ -41,7 +42,6 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         mSearchView = (SearchView) findViewById(R.id.searchView);
 
         getContactList();
-
         ContactAdapter cAdapter = new ContactAdapter(this, R.layout.row, mContact);
 
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
@@ -55,28 +55,28 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
     {
         mSearchView.setIconifiedByDefault(false);
         mSearchView.setOnQueryTextListener(this);
-        mSearchView.setSubmitButtonEnabled(true);
+        mSearchView.setSubmitButtonEnabled(false);
         //mSearchView.setQueryHint("검색");
     }
 
     @Override
     public boolean onQueryTextChange(String newText)
     {
-
-        if (TextUtils.isEmpty(newText)) {
-            mListView.clearTextFilter();
-        } else {
-            mListView.setFilterText(newText);
-        }
-        return true;
+        return false;
     }
 
     @Override
     public boolean onQueryTextSubmit(String query)
     {
-        return false;
-    }
+        ContactAdapter ca = (ContactAdapter) mListView.getAdapter();
 
+        if (TextUtils.isEmpty(query)) {
+            ca.getFilter().filter(null);
+        } else {
+            ca.getFilter().filter(query);
+        }
+        return true;
+    }
 
     private class ContactAdapter extends ArrayAdapter<Contact> {
 
@@ -131,13 +131,13 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
         public View getView(int position, View convertView, ViewGroup parent) {
             View v = convertView;
+            LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);;
 
-            if(v == null) {
-                LayoutInflater vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                v = vi.inflate(R.layout.row, null);
-            }
+            v = vi.inflate(R.layout.row, null);
 
-            if(items.size() > position ) {
+            if(items.size() > position) {
+                Log.d("getView ",String.valueOf(position));
+                Log.d("getView Value ", items.get(position).getName());
                 Contact temp = items.get(position);
 
                 if (temp != null) {
@@ -151,6 +151,8 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
                         tb1.setText("전화번호 : " + temp.getNumber());
                     }
                 }
+            } else if(items.size() != 0 && items.size() <= position) {
+                v = vi.inflate(R.layout.empty, null);
             }
 
             return v;
@@ -231,6 +233,4 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
             return this.Check.isChecked();
         }
     }
-
 }
-
