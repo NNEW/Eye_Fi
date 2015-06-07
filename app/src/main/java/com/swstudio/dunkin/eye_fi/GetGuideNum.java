@@ -3,6 +3,7 @@ package com.swstudio.dunkin.eye_fi;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -17,12 +18,15 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Filter;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -31,7 +35,15 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
     private ArrayList<Contact> mContact = new ArrayList<Contact>();
     private ListView mListView;
     private SearchView mSearchView;
-    private Button mOkButton = null;
+
+    String dbName = "vltList.db";
+    String tableName = "vltListTable";
+    int dbMode = Context.MODE_PRIVATE;
+
+    static SQLiteDatabase db;
+
+    private ListView vltList;
+    private ListView valueList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,14 +53,93 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         mListView  = (ListView) findViewById(R.id.listView);
         mSearchView = (SearchView) findViewById(R.id.searchView);
 
+        Context mContext = getApplicationContext();
         getContactList();
-        ContactAdapter cAdapter = new ContactAdapter(this, R.layout.row, mContact);
+        ContactAdapter cAdapter = new ContactAdapter(mContext, R.layout.row, mContact);
 
         //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
 
         mListView.setAdapter(cAdapter);
         mListView.setTextFilterEnabled(true);
         setupSearchView();
+
+        // Make DB Table
+            db = openOrCreateDatabase(dbName, dbMode, null);
+            String sql = "create table if not exists " + tableName + "(id integer primary key autoincrement, name text not null, phone text not null)";
+            db.execSQL(sql);
+            Log.d("DB", "DB Create");
+
+        //DB Insert
+        findViewById(R.id.Register).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                valueList = (ListView) findViewById(R.id.listView);
+                ContactAdapter tempAdapter = (ContactAdapter) valueList.getAdapter();
+
+                String sql = "select * from " + tableName + ";";
+                Cursor results = db.rawQuery(sql, null);
+
+                results.moveToFirst();
+                ArrayList<Contact> originalValues = new ArrayList<Contact>();
+
+                while(!results.isAfterLast()){
+                    int id = results.getInt(0);
+                    String name = results.getString(1);
+                    String number = results.getString(2);
+
+                    Contact aContact = new Contact();
+
+                    aContact.setName(name);
+                    aContact.setNumber(number);
+
+                    originalValues.add(aContact);
+
+                    results.moveToNext();
+                }
+                results.close();
+
+                ArrayList<Contact> temp = tempAdapter.getItem();
+
+                for (int i = 0; i < temp.size(); i++) {
+                    Log.d("DB", temp.get(i).getName());
+                    Log.d("DB", temp.get(i).getNumber());
+                    Log.d("DB", String.valueOf(temp.get(i).getChecked()));
+
+                    if(temp.get(i).getChecked() == true ) {
+
+                        boolean overlap = false;
+
+                        for(int j = 0; j < originalValues.size(); j++) {
+                            if(originalValues.get(j).getName().equals(temp.get(i).getName()))
+                                overlap = true;
+                        }
+
+                        if(!overlap) {
+                            sql = "insert into " + tableName + " values (NULL, '" + temp.get(i).getName() + "', '" + temp.get(i).getNumber() + "');";
+                            db.execSQL(sql);
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    // 모든 Data 읽기
+    public void selectAll(){
+        String sql = "select * from " + tableName + ";";
+        Cursor results = db.rawQuery(sql, null);
+
+        results.moveToFirst();
+
+        while(!results.isAfterLast()){
+            int id = results.getInt(0);
+            String name = results.getString(1);
+            String number = results.getString(2);
+
+            results.moveToNext();
+        }
+        results.close();
     }
 
     private void setupSearchView()
@@ -78,14 +169,24 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         return true;
     }
 
-    private class ContactAdapter extends ArrayAdapter<Contact> {
+    public class ContactAdapter extends ArrayAdapter<Contact> {
 
         private ArrayList<Contact> items;
         private ArrayList<Contact> origItems;
+        private boolean[] checked;
+
+        public ArrayList<Contact> getItem() {
+            return items;
+        }
 
         public ContactAdapter (Context context, int textViewResourceId, ArrayList<Contact> _items) {
                 super(context, textViewResourceId, _items);
                 this.items = _items;
+                checked = new boolean[items.size()];
+
+                for(int i = 0; i < checked.length; i++) {
+                    checked[i] = false;
+                }
         }
 
         public Filter getFilter() {
@@ -119,6 +220,12 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
                 protected void publishResults(CharSequence constraint, FilterResults results) {
                         items = (ArrayList<Contact>) results.values;
+                        checked = new boolean[items.size()];
+
+                        for(int i = 0; i < checked.length; i++) {
+                            checked[i] = false;
+                        }
+
                         Log.d("Items", String.valueOf(items.size()));
                         notifyDataSetChanged();
                 }
@@ -135,6 +242,8 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
             v = vi.inflate(R.layout.row, null);
 
+            final int cBoxPosition = position;
+
             if(items.size() > position) {
                 Log.d("getView ",String.valueOf(position));
                 Log.d("getView Value ", items.get(position).getName());
@@ -144,9 +253,29 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
                     CheckBox cb1 = (CheckBox) v.findViewById(R.id.Name);
                     TextView tb1 = (TextView) v.findViewById(R.id.phoneNum);
 
+                    Log.d("Check", String.valueOf(temp.getChecked()));
+
                     if (cb1 != null) {
+                        cb1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                if(isChecked) {
+                                    checked[cBoxPosition] = true;
+                                    items.get(cBoxPosition).setChecked(true);
+                                } else {
+                                    checked[cBoxPosition] = false;
+                                    items.get(cBoxPosition).setChecked(false);
+                                }
+                            }
+                        });
+
                         cb1.setText(temp.getName());
+                        if(checked[cBoxPosition] == true)
+                            cb1.setChecked(true);
+                        else
+                            cb1.setChecked(false);
                     }
+
                     if (tb1 != null) {
                         tb1.setText("전화번호 : " + temp.getNumber());
                     }
@@ -232,5 +361,7 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         public boolean getChecked() {
             return this.Check.isChecked();
         }
+
+        public void setChecked(boolean check) { this.Check.setChecked(check); }
     }
 }
