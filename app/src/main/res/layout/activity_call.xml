@@ -7,7 +7,7 @@
     tools:context="com.swstudio.dunkin.eye_fi.CallActivity">
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="HELP"
         android:id="@+id/callBtn"
@@ -43,6 +43,31 @@
         android:layout_marginTop="61dp"
         android:textSize="60dp"
         android:textColor="#000000" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/callBtn"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="사용자 이름"
+            android:id="@+id/textView4"
+            android:textColor="#ff000000" />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Name"
+            android:textAlignment="center"
+            android:gravity="center"
+            android:hint="미설정" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
