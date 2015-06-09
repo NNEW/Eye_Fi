@@ -40,7 +40,7 @@ public class PopupActivity extends Activity {
                     public void onClick(View v) {
                         // LG electronics phone.
                         startActivity(new Intent("com.lge.ims.action.VT_REQUEST")
-                                .putExtra("com.lge.ims.extra.VT_PHONE_NUMBER_LIST", new String[] { notiNum })
+                                .putExtra("com.lge.ims.extra.VT_PHONE_NUMBER_LIST", new String[]{notiNum})
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                         finish();
                     }
