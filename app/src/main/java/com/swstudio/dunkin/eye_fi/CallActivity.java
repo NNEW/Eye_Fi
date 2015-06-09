@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,8 +29,9 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Date;
 
-
 public class CallActivity extends Activity {
+
+    public String myId = "현상원";
 
     String dbName = "vltList.db";
     String tableName = "vltListTable";
@@ -46,7 +48,7 @@ public class CallActivity extends Activity {
         setContentView(R.layout.activity_call);
 
         // Video call with phoneNumber.
-        findViewById(R.id.callBtn).setOnClickListener(
+        /*findViewById(R.id.callBtn).setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -56,7 +58,35 @@ public class CallActivity extends Activity {
                                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 }
-        );
+        );*/
+
+        findViewById(R.id.callBtn).setOnClickListener(
+            new View.OnClickListener() {
+                public void onClick(View v) {
+                    SmsManager mSmsManager = SmsManager.getDefault();
+                    ArrayList<String> numbers = new ArrayList<String>();
+
+                    String sql = "select * from " + tableName + ";";
+                    GetGuideNum.db = openOrCreateDatabase(dbName, dbMode, null);
+                    Cursor results = GetGuideNum.db.rawQuery(sql, null);
+
+                    results.moveToFirst();
+
+                    while(!results.isAfterLast()){
+                        String number = results.getString(2);
+
+                        numbers.add(number);
+
+                        results.moveToNext();
+                    }
+                    results.close();
+
+                    for(int i = 0; i < numbers.size(); i++) {
+                        String smsText = "[EYE-FI] " + myId + "님으로부터 도움요청.";
+                        mSmsManager.sendTextMessage(numbers.get(i),null, smsText, null, null);
+                    }
+                }
+        });
 
         // Call SetGuideNumber
         findViewById(R.id.setGuide).setOnClickListener(
