@@ -244,16 +244,17 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
             final int cBoxPosition = position;
 
+            notifyDataSetChanged();
             if(items.size() > position) {
-                Log.d("getView ",String.valueOf(position));
-                Log.d("getView Value ", items.get(position).getName());
+                //Log.d("getView ",String.valueOf(position));
+                //Log.d("getView Value ", items.get(position).getName());
                 Contact temp = items.get(position);
 
                 if (temp != null) {
                     CheckBox cb1 = (CheckBox) v.findViewById(R.id.Name);
                     TextView tb1 = (TextView) v.findViewById(R.id.phoneNum);
 
-                    Log.d("Check", String.valueOf(temp.getChecked()));
+                    //Log.d("Check", String.valueOf(temp.getChecked()));
 
                     if (cb1 != null) {
                         cb1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

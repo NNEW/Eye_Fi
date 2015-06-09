@@ -5,12 +5,12 @@
     android:weightSum="1">
 
     <TextView
-        android:layout_width="317dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Empty Space"
+        android:text="-"
         android:id="@+id/empty"
         android:textAlignment="center"
-        android:textSize="30dp"
-        android:layout_marginLeft="95dp" />
+        android:textSize="50dp"
+        android:gravity="center" />
 </LinearLayout>

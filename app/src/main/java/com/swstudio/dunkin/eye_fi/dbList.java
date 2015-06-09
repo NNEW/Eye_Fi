@@ -21,12 +21,19 @@ import java.util.ArrayList;
 /**
  * Created by 상원 on 2015-06-07.
  */
+
+class DBId {
+    ArrayList<Integer> ids = new ArrayList<Integer>();
+    ArrayList<String> names = new ArrayList<String>();
+}
+
 public class dbList extends Activity{
 
     String dbName = "vltList.db";
     String tableName = "vltListTable";
     int dbMode = Context.MODE_PRIVATE;
     private ArrayList<Contact> tmpContact = new ArrayList<Contact>();
+    private DBId boxes = new DBId();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +61,9 @@ public class dbList extends Activity{
             Log.d("ID", String.valueOf(id));
             Log.d("aContact",aContact.getName());
             Log.d("aContact",aContact.getNumber());
+
+            boxes.ids.add(id);
+            boxes.names.add(name);
 
             tmpContact.add(aContact);
 
@@ -89,7 +99,13 @@ public class dbList extends Activity{
 
                         for(int i = 0; i < checked.length; i++) {
                             if(checked[i] == true) {
-                                String sql = "delete from " + tableName + " where id = "+ (i+1) +";";
+                                int id = 0;
+                                for(int j = 0; j < boxes.names.size(); j++) {
+                                    if(temp.getItem(i).getName().equals(boxes.names.get(j))) {
+                                        id = boxes.ids.get(j);
+                                    }
+                                }
+                                String sql = "delete from " + tableName + " where id = "+ id +";";
                                 GetGuideNum.db.execSQL(sql);
                             }
                         }
