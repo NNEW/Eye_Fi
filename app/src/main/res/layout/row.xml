@@ -1,22 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/linear_row">
 
-    <CheckBox
-        android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#ffffffff">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/Name"
-        android:text="이름"
-        android:textStyle="bold"/>
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:id="@+id/linear_row"
+        android:orientation="vertical">
 
-    <TextView
-        android:layout_width="316dp"
-        android:layout_height="wrap_content"
-        android:text="전화번호 : "
-        android:id="@+id/phoneNum"
-        android:layout_gravity="center_horizontal"
-        android:textSize="10dp" />
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/Name"
+            android:text="이름"
+            android:textStyle="bold"/>
 
-</LinearLayout>
+        <TextView
+            android:layout_width="316dp"
+            android:layout_height="wrap_content"
+            android:text="전화번호 : "
+            android:id="@+id/phoneNum"
+            android:layout_gravity="center_horizontal"
+            android:textSize="10dp" />
+    </LinearLayout>
+
+</RelativeLayout>

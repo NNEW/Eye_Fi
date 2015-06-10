@@ -23,7 +23,7 @@ public class PopupActivity extends Activity {
         setContentView(R.layout.activity_popup);
 
         TextView adMessage = (TextView)findViewById(R.id.message);
-        adMessage.setText("'" + notiMessage + "'님으로부터\n도움요청이 왔습니다.\n전화연결하시겠습니까?");
+        adMessage.setText(" " + notiMessage + "님으로부터\n도움요청이 왔습니다.\n전화연결하시겠습니까?");
 
         findViewById(R.id.cancel).setOnClickListener(
                 new View.OnClickListener() {

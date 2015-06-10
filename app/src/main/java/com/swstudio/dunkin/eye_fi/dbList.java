@@ -2,6 +2,7 @@ package com.swstudio.dunkin.eye_fi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -109,6 +111,10 @@ public class dbList extends Activity{
                                 GetGuideNum.db.execSQL(sql);
                             }
                         }
+
+                        Toast toast = Toast.makeText(getApplicationContext(), checked.length + "명의 도우미를 취소했습니다.", Toast.LENGTH_SHORT);
+                        toast.show();
+                        finish();
                     }
                 }
         );

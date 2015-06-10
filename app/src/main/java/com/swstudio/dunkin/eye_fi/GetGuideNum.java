@@ -100,6 +100,8 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
                 ArrayList<Contact> temp = tempAdapter.getItem();
 
+                int number = 0;
+
                 for (int i = 0; i < temp.size(); i++) {
                     Log.d("DB", temp.get(i).getName());
                     Log.d("DB", temp.get(i).getNumber());
@@ -115,11 +117,15 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
                         }
 
                         if(!overlap) {
+                            number++;
                             sql = "insert into " + tableName + " values (NULL, '" + temp.get(i).getName() + "', '" + temp.get(i).getNumber() + "');";
                             db.execSQL(sql);
                         }
                     }
                 }
+
+                Toast toast = Toast.makeText(getApplicationContext(), number + "명의 도우미를 등록했습니다.", Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
 
@@ -327,7 +333,7 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
                 //Log.d("contact",acontact.getPhonenum());
                 //Log.d("contact",acontact.getName());
 
-            }while (contactCursor.moveToNext());
+            } while (contactCursor.moveToNext());
         }
     }
 

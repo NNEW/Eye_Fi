@@ -1,10 +1,12 @@
 <resources>
-    <string name="app_name">Eye-Fi</string>
-    <string name="title_activity_call">CallActivity</string>
+    <string name="app_name">아이파이</string>
 
-    <string name="hello_world">Hello world!</string>
+    <string name="title_activity_call">CallActivity</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_get_guide_num">GetGuideNum</string>
     <string name="title_activity_broadcast">BroadcastActivity</string>
     <string name="title_activity_popup">PopupActivity</string>
+    <string name="title_activity_loading">Loading</string>
+
+    <string name="hello_world">Hello world!</string>
 </resources>
