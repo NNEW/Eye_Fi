@@ -47,5 +47,6 @@ public class Loading extends ActionBarActivity {
 
         final ImageView img = (ImageView)findViewById(R.id.loadImage);
         img.setImageDrawable(mAnimation);
+        mAnimation.start();
     }
 }
