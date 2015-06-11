@@ -24,14 +24,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/listView"
             android:layout_below="@+id/searchView"
-            android:layout_above="@+id/Register"
+            android:layout_above="@+id/ok"
             android:layout_weight="1" />
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="도우미 등록"
-            android:id="@+id/Register"
+            android:text="선택완료"
+            android:id="@+id/ok"
 
             android:textStyle="bold"
             android:textSize="15dp"

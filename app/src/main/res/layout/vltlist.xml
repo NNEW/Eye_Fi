@@ -13,12 +13,27 @@
         android:layout_height="match_parent"
         android:layout_weight ="1">
 
-        <ListView
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="도우미 리스트"
+            android:id="@+id/textView7"
+            android:layout_weight="3.27"
+            android:background="#a50098ff"
+            android:textColor="#ff000000"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:textAlignment="gravity"
+            android:gravity="center_horizontal"
+            android:padding="5dp" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="436dp"
             android:layout_alignParentTop="true"
             android:id="@+id/volunteerList"
-            android:layout_weight="100" />
+            android:layout_weight="3.27" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -28,8 +43,25 @@
             android:layout_weight="1">
 
             <Button
-                android:layout_width="match_parent"
-                android:layout_height="fill_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="도우미 등록"
+                android:id="@+id/ok"
+                android:background="#ff0071bd"
+                android:textColor="#ffffffff"
+                android:textStyle="bold"
+                android:textSize="15dp" />
+
+            <view
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                class="android.support.v4.view.ViewPager"
+                android:id="@+id/view"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="도우미 취소"
                 android:id="@+id/unregister"
                 android:textSize="15dp"

@@ -1,10 +1,11 @@
 package com.swstudio.dunkin.eye_fi;
 
 import android.app.Activity;
+import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,23 +30,22 @@ class DBId {
     ArrayList<String> names = new ArrayList<String>();
 }
 
-public class dbList extends Activity{
+public class dbList extends Activity {
 
     String dbName = "vltList.db";
     String tableName = "vltListTable";
     int dbMode = Context.MODE_PRIVATE;
-    private ArrayList<Contact> tmpContact = new ArrayList<Contact>();
-    private DBId boxes = new DBId();
+    public ListView vltList;
+    public static Context mContext;
+    public DBId boxes;
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.vltlist);
-
-        final ListView vltList = (ListView) findViewById(R.id.volunteerList);
+    public void setListViewNotified(final ListView vltList) {
 
         String sql = "select * from " + tableName + ";";
         GetGuideNum.db = openOrCreateDatabase(dbName, dbMode, null);
         Cursor results = GetGuideNum.db.rawQuery(sql, null);
+        ArrayList<Contact> tmpContact = new ArrayList<Contact>();
+        boxes = new DBId();
 
         results.moveToFirst();
 
@@ -73,22 +73,50 @@ public class dbList extends Activity{
         }
         results.close();
 
-        Log.d("DB Contact Size", String.valueOf(tmpContact.size()));
+        //Log.d("DB Contact Size", String.valueOf(tmpContact.size()));
 
-        for(int i = 0; i < tmpContact.size(); i++) {
-            Log.d("DB Value", tmpContact.get(i).getName());
-        }
+        //for(int i = 0; i < tmpContact.size(); i++) {
+        //    Log.d("DB Value", tmpContact.get(i).getName());
+        //}
 
         ContactAdapter tmpAdapter = new ContactAdapter(this, R.layout.row, tmpContact);
         vltList.setAdapter(tmpAdapter);
         vltList.setTextFilterEnabled(true);
+    }
 
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.vltlist);
+        vltList = (ListView) findViewById(R.id.volunteerList);
+
+        boxes = new DBId();
+        setListViewNotified(vltList);
+        mContext = this;
+
+        // 도우미 등록
+        findViewById(R.id.ok).setOnClickListener(
+                new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent popupIntent = new Intent(getApplicationContext(), GetGuideNum.class);
+
+                        PendingIntent pie= PendingIntent.getActivity(getApplicationContext(), 0, popupIntent, PendingIntent.FLAG_ONE_SHOT);
+                        try {
+                            pie.send();
+                        } catch (PendingIntent.CanceledException e) {
+                            Log.d(this.getClass().getSimpleName(), e.getMessage());
+                        }
+                    }
+                });
+
+
+        // 도우미 등록 취소
         findViewById(R.id.unregister).setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
 
                         ContactAdapter temp = (ContactAdapter) vltList.getAdapter();
                         boolean[] checked = new boolean[temp.getCount()];
+                        int deleteToast = 0;
 
                         for(int i = 0; i < checked.length; i++)
                             checked[i] = false;
@@ -105,6 +133,7 @@ public class dbList extends Activity{
                                 for(int j = 0; j < boxes.names.size(); j++) {
                                     if(temp.getItem(i).getName().equals(boxes.names.get(j))) {
                                         id = boxes.ids.get(j);
+                                        deleteToast++;
                                     }
                                 }
                                 String sql = "delete from " + tableName + " where id = "+ id +";";
@@ -112,9 +141,11 @@ public class dbList extends Activity{
                             }
                         }
 
-                        Toast toast = Toast.makeText(getApplicationContext(), checked.length + "명의 도우미를 취소했습니다.", Toast.LENGTH_SHORT);
+                        setListViewNotified(vltList);
+
+                        Toast toast = Toast.makeText(getApplicationContext(), deleteToast + "명의 도우미를 취소했습니다.", Toast.LENGTH_SHORT);
                         toast.show();
-                        finish();
+                        //finish();
                     }
                 }
         );

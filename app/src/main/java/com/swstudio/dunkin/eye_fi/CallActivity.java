@@ -108,13 +108,13 @@ public class CallActivity extends Activity {
         });
 
         // Call SetGuideNumber
-        findViewById(R.id.setGuide).setOnClickListener(
+        /*findViewById(R.id.setGuide).setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View v) {
                         startActivity(new Intent(getApplication(), GetGuideNum.class));
                     }
                 }
-        );
+        );*/
 
         // DB Check
         findViewById(R.id.seeGuide).setOnClickListener(new View.OnClickListener() {

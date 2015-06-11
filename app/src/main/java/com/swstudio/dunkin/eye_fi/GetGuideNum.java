@@ -2,6 +2,7 @@ package com.swstudio.dunkin.eye_fi;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
@@ -10,18 +11,11 @@ import android.provider.ContactsContract;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
@@ -42,7 +36,6 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
     static SQLiteDatabase db;
 
-    private ListView vltList;
     private ListView valueList;
 
     @Override
@@ -64,7 +57,7 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         setupSearchView();
 
         //DB Insert
-        findViewById(R.id.Register).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.ok).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 valueList = (ListView) findViewById(R.id.listView);
@@ -120,9 +113,11 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
 
                 Toast toast = Toast.makeText(getApplicationContext(), number + "명의 도우미를 등록했습니다.", Toast.LENGTH_SHORT);
                 toast.show();
+
+                ((dbList)dbList.mContext).setListViewNotified(((dbList)dbList.mContext).vltList);
+                finish();
             }
         });
-
     }
 
     // 모든 Data 읽기
@@ -159,13 +154,27 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
     @Override
     public boolean onQueryTextSubmit(String query)
     {
-        ContactAdapter ca = (ContactAdapter) mListView.getAdapter();
+        /*ContactAdapter ca = (ContactAdapter) mListView.getAdapter();
 
         if (TextUtils.isEmpty(query)) {
             ca.getFilter().filter(null);
         } else {
             ca.getFilter().filter(query);
+        }*/
+
+        ArrayList<Contact> mSearchResults = new ArrayList<Contact>();
+
+        for(final Contact c : mContact) {
+            if(c.getName().toLowerCase().contains(query)) {
+                mSearchResults.add(c);
+            }
         }
+
+        ContactAdapter newAdapter = new ContactAdapter(getApplicationContext(), R.layout.row, mSearchResults);
+        mListView.setAdapter(newAdapter);
+        mListView.setTextFilterEnabled(true);
+        setupSearchView();
+
         return true;
     }
 

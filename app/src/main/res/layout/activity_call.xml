@@ -16,7 +16,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="EYE-FI"
+            android:text="아이파이"
             android:id="@+id/textView2"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Connect Eyes with Eyes"
+            android:text="눈과 눈을 잇다"
             android:id="@+id/textView3"
             android:textSize="20dp"
             android:layout_below="@+id/textView2"
@@ -93,7 +93,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="도우미 설정"
+                android:text="사용방법"
                 android:id="@+id/setGuide"
                 android:layout_gravity="bottom"
                 android:background="#ff0071bd"
