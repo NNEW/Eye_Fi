@@ -63,12 +63,6 @@ public class GetGuideNum extends Activity implements SearchView.OnQueryTextListe
         mListView.setTextFilterEnabled(true);
         setupSearchView();
 
-        // Make DB Table
-            db = openOrCreateDatabase(dbName, dbMode, null);
-            String sql = "create table if not exists " + tableName + "(id integer primary key autoincrement, name text not null, phone text not null)";
-            db.execSQL(sql);
-            Log.d("DB", "DB Create");
-
         //DB Insert
         findViewById(R.id.Register).setOnClickListener(new View.OnClickListener() {
             @Override

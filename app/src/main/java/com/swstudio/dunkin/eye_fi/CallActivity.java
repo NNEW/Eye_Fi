@@ -33,12 +33,9 @@ import java.util.Date;
 
 public class CallActivity extends Activity {
 
-
     String dbName = "vltList.db";
     String tableName = "vltListTable";
     int dbMode = Context.MODE_PRIVATE;
-
-    SQLiteDatabase db;
 
     private ListView vltList;
     private ListView valueList;
@@ -52,6 +49,12 @@ public class CallActivity extends Activity {
         String text = prefs.getString("Name", "");
         final EditText edit = (EditText)findViewById(R.id.Name);
         edit.setText(text);
+
+        // Make DB Table
+        GetGuideNum.db = openOrCreateDatabase(dbName, dbMode, null);
+        String sql = "create table if not exists " + tableName + "(id integer primary key autoincrement, name text not null, phone text not null)";
+        GetGuideNum.db.execSQL(sql);
+        Log.d("DB", "DB Create");
 
         // Video call with phoneNumber.
         /*findViewById(R.id.callBtn).setOnClickListener(
