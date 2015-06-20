@@ -35,7 +35,18 @@
             android:textSize="15dp"
             android:gravity="center"
             android:layout_margin="10dp"
-            android:lineSpacingExtra="10dp"/>
+            android:lineSpacingExtra="5dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#900071bd"
+            android:layout_gravity="center"
+            android:textSize="12dp"
+            android:gravity="center"
+            android:layout_margin="3dp"
+            android:text="나중에 연결을 원하시면 바깥을 눌러주세요."
+            android:id="@+id/decr" />
 
         <LinearLayout
             android:orientation="horizontal"
@@ -71,6 +82,7 @@
                 android:textStyle="bold"
                 android:textSize="10dp" />
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

@@ -1,10 +1,13 @@
 package com.swstudio.dunkin.eye_fi;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.SmsMessage;
 import android.util.Log;
 
@@ -15,6 +18,7 @@ public class Broadcast extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.v("D", intent.getAction());
         if ("android.provider.Telephony.SMS_RECEIVED".equals(intent.getAction())) {
             // sms 수신
             // SMS 메시지를 파싱합니다.
@@ -37,11 +41,19 @@ public class Broadcast extends BroadcastReceiver {
 // SMS 메시지 확인
             String message = smsMessage[0].getMessageBody().toString();
             if (message.contains("[EYE-FI]")) {
-                bundle.putString("notiMessage", message.substring(9, message.indexOf("님으로부터")));
+                String sender = message.substring(9, message.indexOf("님으로부터"));
+                bundle.putString("notiMessage", sender);
                 bundle.putString("notiNum", origNumber);
+
                 showNotification(context, bundle);
             }
             Log.d("문자 내용", "발신자 : " + origNumber + ", 내용 : " + message);
+        } else if ("Call".equals(intent.getAction())) {
+            NotificationManager nNM = (NotificationManager)context.getSystemService(Context.NOTIFICATION_SERVICE);
+            nNM.cancel(9999);
+            context.startActivity(new Intent("com.lge.ims.action.VT_REQUEST")
+                    .putExtra("com.lge.ims.extra.VT_PHONE_NUMBER_LIST", new String[]{intent.getExtras().getString("notiNum")})
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
 
@@ -50,6 +62,7 @@ public class Broadcast extends BroadcastReceiver {
 
         popupIntent.putExtras(bune);
         PendingIntent pie= PendingIntent.getActivity(context, 0, popupIntent, PendingIntent.FLAG_ONE_SHOT);
+
         try {
             pie.send();
         } catch (PendingIntent.CanceledException e) {
