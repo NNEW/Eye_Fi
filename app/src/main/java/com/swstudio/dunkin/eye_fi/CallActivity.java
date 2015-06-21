@@ -56,19 +56,6 @@ public class CallActivity extends Activity {
         GetGuideNum.db.execSQL(sql);
         Log.d("DB", "DB Create");
 
-        // Video call with phoneNumber.
-        /*findViewById(R.id.callBtn).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // LG electronics phone.
-                        startActivity(new Intent("com.lge.ims.action.VT_REQUEST")
-                                .putExtra("com.lge.ims.extra.VT_PHONE_NUMBER_LIST", new String[]{((EditText) findViewById(R.id.phoneNum)).getText().toString()})
-                                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-                    }
-                }
-        );*/
-
         findViewById(R.id.callBtn).setOnClickListener(
             new View.OnClickListener() {
                 public void onClick(View v) {
@@ -107,19 +94,16 @@ public class CallActivity extends Activity {
                 }
         });
 
-        // Call SetGuideNumber
-        /*findViewById(R.id.setGuide).setOnClickListener(
-                new View.OnClickListener() {
-                    public void onClick(View v) {
-                        startActivity(new Intent(getApplication(), GetGuideNum.class));
-                    }
-                }
-        );*/
-
         // DB Check
         findViewById(R.id.seeGuide).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                startActivity(new Intent(getApplication(), dbList.class));
+
+            }
+        });
+
+        findViewById(R.id.settings).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), Settings.class));
             }
         });
     }
